@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Navigator - AI行业导航站</title>
+    <style>
+        :root {
+            --primary-color: #4A6CF7;
+            --secondary-color: #6E56CF;
+            --light-bg: #F8F9FF;
+            --dark-text: #333;
+            --light-text: #666;
+            --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            --header-height: 72px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            height: var(--header-height);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 36px;
+            margin-right: 10px;
+        }
+        
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 20px;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 30px;
+            border: 1px solid #eee;
+            background-color: #f5f7ff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.15);
+        }
+        
+        .search-bar i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Main Content */
+        main {
+            margin-top: calc(var(--header-height) + 30px);
+            padding: 20px 0 60px;
+        }
+        
+        .category-section {
+            margin-bottom: 40px;
+        }
+        
+        .category-title {
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .category-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .tool-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .tool-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .tool-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #f3f5ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .tool-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+        
+        .tool-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+        
+        .tool-description {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-top: auto;
+            line-height: 1.5;
+        }
+        
+        /* Footer Styles */
+        footer {
+            background-color: #fff;
+            padding: 30px 0;
+            margin-top: 60px;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .footer-links a {
+            margin-left: 20px;
+            color: var(--light-text);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                height: auto;
+                padding: 15px 0;
+            }
+            
+            .search-bar {
+                max-width: 100%;
+                margin: 15px 0;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            .tools-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                margin-top: 15px;
+            }
+            
+            .footer-links a {
+                margin: 0 10px;
+            }
+            
+            main {
+                margin-top: 180px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 0C8.05888 0 0 8.05888 0 18C0 27.9411 8.05888 36 18 36C27.9411 36 36 27.9411 36 18C36 8.05888 27.9411 0 18 0ZM18 6C23.5228 6 28 10.4772 28 16C28 21.5228 23.5228 26 18 26C12.4772 26 8 21.5228 8 16C8 10.4772 12.4772 6 18 6Z" fill="#4A6CF7"/>
+                    <path d="M18 10C14.6863 10 12 12.6863 12 16C12 19.3137 14.6863 22 18 22C21.3137 22 24 19.3137 24 16C24 12.6863 21.3137 10 18 10Z" fill="#6E56CF"/>
+                </svg>
+                <span>AI Navigator</span>
+            </a>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索AI工具...">
+                <i>🔍</i>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#dev-tools">开发者工具</a></li>
+                    <li><a href="#personal-tools">个人使用工具</a></li>
+                    <li><a href="#business-tools">企业解决方案</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="category-section" id="dev-tools">
+            <h2 class="category-title">开发者工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card" onclick="window.open('https://github.com/features/copilot', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="GitHub Copilot" />
+                        </div>
+                        <h3 class="tool-name">GitHub Copilot</h3>
+                    </div>
+                    <p class="tool-description">AI辅助编码工具，提供实时代码建议和自动补全功能，支持多种编程语言和集成开发环境。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://huggingface.co', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Hugging Face" />
+                        </div>
+                        <h3 class="tool-name">Hugging Face</h3>
+                    </div>
+                    <p class="tool-description">AI社区和开源平台，提供数千种预训练模型、数据集和用于自然语言处理的工具。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.tensorflow.org', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="TensorFlow" />
+                        </div>
+                        <h3 class="tool-name">TensorFlow</h3>
+                    </div>
+                    <p class="tool-description">Google开发的开源机器学习框架，用于开发和训练AI模型，具有强大的生态系统和工具链。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://pytorch.org', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="PyTorch" />
+                        </div>
+                        <h3 class="tool-name">PyTorch</h3>
+                    </div>
+                    <p class="tool-description">由Facebook开发的机器学习框架，以其动态计算图和易用性在研究社区中广受欢迎。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.deeplearning.ai', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="DeepLearning.AI" />
+                        </div>
+                        <h3 class="tool-name">DeepLearning.AI</h3>
+                    </div>
+                    <p class="tool-description">由吴恩达创立的AI教育平台，提供高质量的深度学习课程和实践项目。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://openai.com/blog/openai-api', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="OpenAI API" />
+                        </div>
+                        <h3 class="tool-name">OpenAI API</h3>
+                    </div>
+                    <p class="tool-description">提供对GPT-4等先进AI模型的访问，可用于文本生成、对话系统和内容创作等应用开发。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="category-section" id="personal-tools">
+            <h2 class="category-title">个人使用工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card" onclick="window.open('https://chat.openai.com', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="ChatGPT" />
+                        </div>
+                        <h3 class="tool-name">ChatGPT</h3>
+                    </div>
+                    <p class="tool-description">对话式AI助手，可回答问题、提供建议、辅助写作和创作内容，支持多种语言。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://midjourney.com', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Midjourney" />
+                        </div>
+                        <h3 class="tool-name">Midjourney</h3>
+                    </div>
+                    <p class="tool-description">AI图像生成工具，通过文本描述创建高质量艺术作品和视觉内容。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.notion.so/ai', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Notion AI" />
+                        </div>
+                        <h3 class="tool-name">Notion AI</h3>
+                    </div>
+                    <p class="tool-description">集成在Notion工作空间中的AI写作助手，可帮助生成内容、总结文本和改进写作。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://runwayml.com', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Runway" />
+                        </div>
+                        <h3 class="tool-name">Runway</h3>
+                    </div>
+                    <p class="tool-description">视频和创意工具平台，使用AI技术简化视频编辑、特效和视觉内容创作。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.jasper.ai', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Jasper" />
+                        </div>
+                        <h3 class="tool-name">Jasper</h3>
+                    </div>
+                    <p class="tool-description">AI内容创作平台，帮助用户快速生成博客、社交媒体和营销文案等各类文本内容。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.grammarly.com', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Grammarly" />
+                        </div>
+                        <h3 class="tool-name">Grammarly</h3>
+                    </div>
+                    <p class="tool-description">AI写作助手，提供语法检查、拼写纠正和风格建议，帮助提升写作质量。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="category-section" id="business-tools">
+            <h2 class="category-title">企业解决方案</h2>
+            <div class="tools-grid">
+                <div class="tool-card" onclick="window.open('https://www.databricks.com', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Databricks" />
+                        </div>
+                        <h3 class="tool-name">Databricks</h3>
+                    </div>
+                    <p class="tool-description">数据和AI平台，帮助企业构建、训练和部署机器学习模型，实现大数据分析。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.datarobot.com', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="DataRobot" />
+                        </div>
+                        <h3 class="tool-name">DataRobot</h3>
+                    </div>
+                    <p class="tool-description">自动化机器学习平台，使企业能够快速构建和部署AI模型，无需深厚的技术专业知识。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.salesforce.com/products/einstein/overview', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Salesforce Einstein" />
+                        </div>
+                        <h3 class="tool-name">Salesforce Einstein</h3>
+                    </div>
+                    <p class="tool-description">Salesforce平台中的AI功能集，为客户关系管理提供智能预测、推荐和自动化。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.sap.com/products/artificial-intelligence.html', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="SAP AI" />
+                        </div>
+                        <h3 class="tool-name">SAP AI</h3>
+                    </div>
+                    <p class="tool-description">企业资源规划(ERP)系统中的AI解决方案，优化业务流程和决策制定。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://www.ibm.com/watson', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="IBM Watson" />
+                        </div>
+                        <h3 class="tool-name">IBM Watson</h3>
+                    </div>
+                    <p class="tool-description">企业级AI服务套件，包括自然语言处理、视觉识别和机器学习工具，应用于各行各业。</p>
+                </div>
+                
+                <div class="tool-card" onclick="window.open('https://cloud.google.com/ai-platform', '_blank')">
+                    <div class="tool-header">
+                        <div class="tool-icon">
+                            <img src="/api/placeholder/48/48" alt="Google Cloud AI" />
+                        </div>
+                        <h3 class="tool-name">Google Cloud AI</h3>
+                    </div>
+                    <p class="tool-description">谷歌云平台提供的AI和机器学习服务，帮助企业构建和部署AI应用。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-container">
+            <div class="copyright">
+                <p>© 2025 AI Navigator. 所有权利保留。</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">关于我们</a>
+                <a href="#">使用条款</a>
+                <a href="#">隐私政策</a>
+                <a href="#">联系我们</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 搜索功能实现
+        document.querySelector('.search-bar input').addEventListener('keyup', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const toolCards = document.querySelectorAll('.tool-card');
+            
+            toolCards.forEach(card => {
+                const toolName = card.querySelector('.tool-name').textContent.toLowerCase();
+                const toolDesc = card.querySelector('.tool-description').textContent.toLowerCase();
+                
+                if (toolName.includes(searchTerm) || toolDesc.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                const headerHeight = document.querySelector('header').offsetHeight;
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - headerHeight - 20,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
